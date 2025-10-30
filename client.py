@@ -16,7 +16,6 @@ class MetaClient:
         self.batch_size = batch_size
         self.critierion = nn.CrossEntropyLoss()
 
-        # CIFAR和MNIST图像的size得改
         if dataset == "CiFAR10"  :
             self.model = CIFARcnn(out_dim=10)
         elif dataset =="CiFAR100":
@@ -56,7 +55,7 @@ class MetaClient:
 
             img, label = next(iter(self.sup_loader))
             pred = fast_model(img)
-            loss = self.critierion(pred,label)# entropy内部会自动进行softmax
+            loss = self.critierion(pred,label)
             total_loss += loss.item()
             total_correct += pred.argmax(1).eq(label).sum().item()
             total_sample += len(label)
@@ -64,9 +63,6 @@ class MetaClient:
             inner_opt.step()
             grads += [p.grad for p in fast_model.parameters() if p.grad is not None]
         ft_update = fast_model.state_dict()
-        # print("Client",self.cid," innerloop loss is:",total_loss/(self.inner_step+1))
-        # print(" innerloop correct is:",total_correct/total_sample)
-        # print("support set total sample:",total_sample)
         total_correct =total_correct/ total_sample
         return grads,total_correct,total_loss,total_sample,ft_update
 
@@ -87,9 +83,6 @@ class MetaClient:
             loss.backward()
             outter_opt.step()
 
-        # print("Client",self.cid," outterloop loss is:",total_loss/self.outter_step)
-        # print(" outterloop correct is:",total_correct/total_sample)
-        # print("queset total sample:",total_sample)
         state_dict = self.model.state_dict()
         total_correct =total_correct/ total_sample
         return state_dict, total_correct, total_loss, total_sample

@@ -18,7 +18,6 @@ class HyperNetwork(nn.Module):
         self.n_kernels = n_kernels
         self.embeddings = nn.Embedding(num_embeddings=n_nodes, embedding_dim=embedding_dim)
 
-        # spectral_norm进行谱归一化
         layers = [
             spectral_norm(nn.Linear(embedding_dim, hidden_dim)) if spec_norm else nn.Linear(embedding_dim, hidden_dim),
         ]
@@ -29,7 +28,6 @@ class HyperNetwork(nn.Module):
                 spectral_norm(nn.Linear(hidden_dim, hidden_dim)) if spec_norm else nn.Linear(hidden_dim, hidden_dim),
             )
 
-        # python中*可迭代对象表示解压该对象
         self.mlp = nn.Sequential(*layers)
 
         self.c1_weights = nn.Linear(hidden_dim, self.n_kernels * self.in_channels * 5 * 5)
@@ -73,18 +71,3 @@ class HyperNetwork(nn.Module):
         })
         return weights
 
-
-### ---------------MAIN HERE----------------
-# n_hidden = 3
-# embed_dim = 3# -1
-# hyper_hid = 100
-# nkernels = 16
-# num_nodes = 10# client数
-# out_dim = 10
-# hypernet = CNNHyper(num_nodes,embed_dim,in_channels=3,hidden_dim=hyper_hid,n_hidden=n_hidden)
-
-# node_id = random.choice(range(num_nodes))
-# weights = hypernet(torch.tensor([node_id], dtype=torch.long))
-# print(weights)
-# cnn = CNNTarget(3,16,10)
-# cnn.load_state_dict(weights)

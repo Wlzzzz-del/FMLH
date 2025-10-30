@@ -18,11 +18,8 @@ class CIFARHyper(nn.Module):
         self.in_channels = in_channels
         self.outdim = outdim
 
-        # embedding_dim = int(client_num+1/4)
-        # self.embeddings = nn.Embedding(client_num, embedding_dim=embedding_dim)
         self.embeddings = embed
 
-        # 构造layers生成hidden_dim, embedding_dim---->hidden_dim
         layers = [
             nn.Linear(embedding_dim, hidden_dim)
         ]
@@ -81,19 +78,3 @@ class CIFARcnn(nn.Module):
         return x
 
 
-# hyper = CIFARHyper()
-# node_id = random.choice(range(10))
-# state_dict = hyper(torch.tensor([1],dtype=torch.long))
-
-# model = CIFARcnn(in_channels=3,channels=32, out_dim=10)
-# model.load_state_dict(state_dict)
-# # state_dict = model.state_dict()
-# # for i in model.state_dict():
-# #     print(i,"的size为:",state_dict[i].shape)
-
-# train_dataset = CIFAR10(root='./CIFAR10_dataset', train=True, download=True, transform=Compose([ToTensor(),Normalize(mean=(0.5,),std=(0.5,))]))
-# # train_dataset = FashionMNIST(root='path/to/FashionMNIST', train=True, download=True, transform=Compose([ToTensor(),Normalize(mean=(0.5,),std=(0.5,))]))
-# train_loader = DataLoader(train_dataset, batch_size=32, shuffle=True)
-# for inputs,labels in train_loader:
-#     # print(inputs[0])
-#     model(inputs)
